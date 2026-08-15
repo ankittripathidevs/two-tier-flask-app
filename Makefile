@@ -1,48 +1,56 @@
 # Determine the operating system
-OS := $(shell uname)
+OS = $(shell uname)
 
 # Define Docker compose command
-DOCKER_COMPOSE := docker-compose
+DOCKER_COMPOSE = docker compose
 
-# Define Docker compose service name
-SERVICE_NAME := web
-
-# Build target
+# (1) Build target
 build:
 ifeq ($(OS),Linux)
-	@echo "Building for Linux"
-	$(DOCKER_COMPOSE) build
+    @echo "Building for Linux"
+    $(DOCKER_COMPOSE) build
 endif
 ifeq ($(OS),Darwin)
-	@echo "Building for macOS"
-	$(DOCKER_COMPOSE) build
+    @echo "Building for macOS"
+    $(DOCKER_COMPOSE) build
 endif
 ifeq ($(OS),Windows_NT)
-	@echo "Building for Windows"
-	# Add Windows-specific build commands if you wish :P
+    @echo "Building for Windows"
+    # Add Windows-specific build commands if you wish :P
 endif
 
-# Run target
+
+# (2) Run target
 run:
-ifeq ($(OS),Linux)
-	@echo "Running for Linux"
-	$(DOCKER_COMPOSE) up -d
-endif
-ifeq ($(OS),Darwin)
-	@echo "Running for macOS"
-	$(DOCKER_COMPOSE) up -d
-endif
-ifeq ($(OS),Windows_NT)
-	@echo "Running for Windows"
-	# Add Windows-specific run commands if you wish :P
-endif
+    @echo "Starting containers..."
+    $(DOCKER_COMPOSE) up -d
 
-# Stop target
+
+# (3) Stop target
 stop:
-	$(DOCKER_COMPOSE) down
+    @echo "Stopping containers..."
+    $(DOCKER_COMPOSE) down
 
-# Clean target
+
+# (4) Check Logs
+logs:
+    $(DOCKER_COMPOSE) logs -f
+
+
+# (5) Restart Container
+restart: stop run
+
+
+# (6) Check Status
+status:
+    $(DOCKER_COMPOSE) ps
+
+
+# (7)  Clean target
 clean: stop
-	$(DOCKER_COMPOSE) rm -f
-	docker system prune -f
+    @echo "Removing unused Docker resources..."
+    $(DOCKER_COMPOSE) rm -f
+    docker system prune -f
 
+
+.PHONY: build run stop clean logs restart status

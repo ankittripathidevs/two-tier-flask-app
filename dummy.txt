@@ -1,1 +1,19 @@
 This is a dummy file
+
+
+# eks
+# k8s
+# template
+# dockerfile
+# Makefile
+# REeadme.md
+# requirement.txt
+# message.sql
+# dummy.txt
+
+# docker-compose.yml
+# app.py
+# jenkins 
+# dockerfile multistage
+
+
