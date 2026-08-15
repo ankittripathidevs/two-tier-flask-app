@@ -4,53 +4,40 @@ OS = $(shell uname)
 # Define Docker compose command
 DOCKER_COMPOSE = docker compose
 
-# (1) Build target
+# (1) Build
 build:
-ifeq ($(OS),Linux)
-    @echo "Building for Linux"
-    $(DOCKER_COMPOSE) build
-endif
-ifeq ($(OS),Darwin)
-    @echo "Building for macOS"
-    $(DOCKER_COMPOSE) build
-endif
-ifeq ($(OS),Windows_NT)
-    @echo "Building for Windows"
-    # Add Windows-specific build commands if you wish :P
-endif
+        @echo " Running in $(OS)....."
+        @echo "Building Docker image..."
+        $(DOCKER_COMPOSE) build
 
 
-# (2) Run target
+# (2) Run
 run:
-    @echo "Starting containers..."
-    $(DOCKER_COMPOSE) up -d
+        echo "Starting Containers..."
+        $(DOCKER_COMPOSE) up -d
 
 
-# (3) Stop target
+# (3) Stop
 stop:
-    @echo "Stopping containers..."
-    $(DOCKER_COMPOSE) down
+        @echo "Stopping Containers..."
+        $(DOCKER_COMPOSE) down
 
 
 # (4) Check Logs
 logs:
-    $(DOCKER_COMPOSE) logs -f
+        $(DOCKER_COMPOSE) logs -f
 
 
-# (5) Restart Container
-restart: stop run
-
-
-# (6) Check Status
+# (5) Check Status
 status:
-    $(DOCKER_COMPOSE) ps
+        $(DOCKER_COMPOSE) ps
 
 
-# (7)  Clean target
+# (6)  Clean
 clean: stop
-    @echo "Removing unused Docker resources..."
-    $(DOCKER_COMPOSE) rm -f
-    docker system prune -f
+        @echo "Removing unsed Docker resources..."
+        $(DOCKER_COMPOSE) rm -f
+        docker system prune -f
 
 
-.PHONY: build run stop clean logs restart status
+.PHONY: build run stop clean logs  status
