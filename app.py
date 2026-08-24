@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
@@ -32,6 +32,13 @@ def hello():
     messages = cur.fetchall()
     cur.close()
     return render_template('index.html', messages=messages)
+
+
+# Added For Health Check
+@app.route('/health')
+def health():
+    return jsonify({'status': 'healthy'}), 200
+
 
 @app.route('/submit', methods=['POST'])
 def submit():
