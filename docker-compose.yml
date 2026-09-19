@@ -55,8 +55,10 @@ services:
       start_period: 30s
 
 
-networks:
-  two-tier:
-
 volumes:
   mysql-data:
+
+
+networks:
+  two-tier:
+      name: two-tier
