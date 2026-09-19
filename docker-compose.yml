@@ -57,6 +57,7 @@ services:
 
 volumes:
   mysql-data:
+      name: mysql-data
 
 
 networks:
