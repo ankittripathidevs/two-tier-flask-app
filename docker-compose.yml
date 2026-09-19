@@ -11,13 +11,13 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
-      - mysql-data:/var/lib/mysql
+      # - mysql-data:/var/lib/mysql
 
       # Bind Mount: Store MySQL data in a custom location on Ubuntu
       # - /home/ubuntu/volumes/mysql:/var/lib/mysql
 
       # Bind Mount: Store MySQL data inside the project directory
-      # - ./mysql-data:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql
      
     networks:
       - two-tier
