@@ -1,16 +1,24 @@
 services:
+
   mysql:
-    user: "${UID}:${GID}"
     image: mysql:9.7
     container_name: mysql-container
+    ports:
+      - "3606:3606"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: devops
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
-      -  mysql-data:/var/lib/mysql
-      #- ./message.sql:/docker-entrypoint-initdb.d/message.sql
+      - mysql-data:/var/lib/mysql
+
+      # Bind Mount: Store MySQL data in a custom location on Ubuntu
+      # - /home/ubuntu/volumes/mysql:/var/lib/mysql
+
+      # Bind Mount: Store MySQL data inside the project directory
+      # - ./mysql-data:/var/lib/mysql
+     
     networks:
       - two-tier
     restart: always
@@ -21,6 +29,7 @@ services:
       retries: 5
       start_period: 60s
 
+
   flask-app:
     build:
       context: .
@@ -28,7 +37,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      MYSQL_HOST: mysql
+      MYSQL_HOST: mysql    # Should be service_Name not conatiner_Name.
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_DB: devops
@@ -36,7 +45,7 @@ services:
        mysql:
           condition: service_healthy
     networks:
-      - twotier
+      - two-tier
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
@@ -45,8 +54,9 @@ services:
       retries: 5
       start_period: 30s
 
+
 networks:
   two-tier:
 
 volumes:
-   mysql-data:
+  mysql-data:
