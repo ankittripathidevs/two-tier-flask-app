@@ -31,7 +31,7 @@ services:
 
 
   flask-app:
-    images: ankittripathidocker/two-tier-flask-app:latest
+    image: ankittripathidocker/two-tier-flask-app:latest
     container_name: flask-container
     ports:
       - "5000:5000"
