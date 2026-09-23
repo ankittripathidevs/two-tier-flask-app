@@ -31,7 +31,9 @@ services:
 
 
   flask-app:
-    image: ankittripathidocker/two-tier-flask-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: flask-container
     ports:
       - "5000:5000"
