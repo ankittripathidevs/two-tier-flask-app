@@ -1,114 +1,128 @@
- # Flask App with MySQL Docker Setup
+# 🐳 Docker Compose — 2-Tier Flask + MySQL
 
-This is a simple Flask app that interacts with a MySQL database. The app allows users to submit messages, which are then stored in the database and displayed on the frontend.
+Docker Compose is used to define and run the **Flask application and MySQL database together** using a single `docker-compose.yml` file.
 
-## Prerequisites
-
-Before you begin, make sure you have the following installed:
-
-- Docker
-- Git (optional, for cloning the repository)
-
-## Setup
-
-1. Clone this repository (if you haven't already):
-
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd your-repo-name
-   ```
-
-3. Create a `.env` file in the project directory to store your MySQL environment variables:
-
-   ```bash
-   touch .env
-   ```
-
-4. Open the `.env` file and add your MySQL configuration:
-
-   ```
-   MYSQL_HOST=mysql
-   MYSQL_USER=your_username
-   MYSQL_PASSWORD=your_password
-   MYSQL_DB=your_database
-   ```
-
-## Usage
-
-1. Start the containers using Docker Compose:
-
-   ```bash
-   docker-compose up --build
-   ```
-
-2. Access the Flask app in your web browser:
-
-   - Frontend: http://localhost
-   - Backend: http://localhost:5000
-
-
-## Cleaning Up
-
-To stop and remove the Docker containers, press `Ctrl+C` in the terminal where the containers are running, or use the following command:
+## 1. 🔍 Validate Compose File
 
 ```bash
-docker-compose down
+docker compose config
 ```
 
-## To run this two-tier application using  without docker-compose
+## 2. 🚀 Build & Start Containers
 
-- First create a docker image from Dockerfile
 ```bash
-docker build -t flaskapp .
+docker compose up -d --build
 ```
 
-- Now, make sure that you have created a network using following command
+* `-d` → Run containers in background
+* `--build` → Build the Flask image before starting
+
+## 3. 📦 Check Containers
+
 ```bash
-docker network create two-tier
+docker compose ps
 ```
 
-- Attach both the containers in the same network, so that they can communicate with each other
+## 4. 📋 Check Logs
 
-i) MySQL container 
+All services:
+
 ```bash
-docker run -d \
-    --name mysql \
-    -v mysql-data:/var/lib/mysql \
-    --network=two-tier \
-    -e MYSQL_DATABASE=mydb \
-    -e MYSQL_ROOT_PASSWORD=admin \
-    -p 3306:3306 \
-    mysql:5.7
-
+docker compose logs
 ```
-ii) Backend container
+
+Flask only:
+
 ```bash
-docker run -d \
-    --name flaskapp \
-    --network=two-tier \
-    -e MYSQL_HOST=mysql \
-    -e MYSQL_USER=root \
-    -e MYSQL_PASSWORD=admin \
-    -e MYSQL_DB=mydb \
-    -p 5000:5000 \
-    flaskapp:latest
-
+docker compose logs flask-app
 ```
 
-## Notes
+MySQL only:
 
-- Make sure to replace placeholders (e.g., `your_username`, `your_password`, `your_database`) with your actual MySQL configuration.
-
-- This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.
-
-- Be cautious when executing SQL queries directly. Validate and sanitize user inputs to prevent vulnerabilities like SQL injection.
-
-- If you encounter issues, check Docker logs and error messages for troubleshooting.
-
+```bash
+docker compose logs mysql
 ```
+
+## 5. 🛑 Stop Containers
+
+```bash
+docker compose down
+```
+
+> `docker compose down` removes the containers and network, but the **named volume** remains.
+
+## 6. 🔄 Start Again
+
+```bash
+docker compose up -d
+```
+
+## 7. 💾 MySQL Volume
+
+The project uses a **Named Volume**:
+
+```yaml
+volumes:
+  - mysql-data:/var/lib/mysql
+```
+
+Check:
+
+```bash
+docker volume ls
+```
+
+Inspect:
+
+```bash
+docker volume inspect mysql-data
+```
+
+Check the actual data files:
+
+```bash
+sudo ls -lah /var/lib/docker/volumes/mysql-data/_data
+```
+
+## 8. 🌐 Docker Network
+
+Both Flask and MySQL use:
+
+```yaml
+networks:
+  - two-tier
+```
+
+Flask connects to MySQL using the **service name**:
+
+```yaml
+MYSQL_HOST: mysql
+```
+
+So the connection is:
+
+```text
+Flask Container
+      ↓
+   mysql:3306
+      ↓
+MySQL Container
+```
+
+> Do not use `localhost` for `MYSQL_HOST`.
+
+## 9. 🔌 Ports
+
+```text
+Flask → 5000
+MySQL → 3306
+```
+
+Access Flask:
+
+```text
+http://<EC2-PUBLIC-IP>:5000
+```
+
+> In the Compose file, MySQL should normally be mapped as `"3606:3306"` if you want to access MySQL through host port `3606`.
 
