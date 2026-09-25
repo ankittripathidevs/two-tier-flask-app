@@ -25,24 +25,24 @@ pipeline {
             steps {
                  withCredentials([
                      usernamePassword(
-                         credentialsId: "dockerHubCreds",
-                         usernameVariable: "dockerHubUser",
-                         passwordVariable: "dockerHubPass"
+                         credentialsId: "DockerHub_Creds",
+                         usernameVariable: "DockerHub_User",
+                         passwordVariable: "DockerHub_Pass"
                 )]) {
                      echo "Login to DockerHub"
 
                      sh '''
-                         echo "$dockerHubPass" | docker login -u "$dockerHubUser" --password-stdin
+                         echo "$DockerHub_Pass" | docker login -u "$DockerHub_User" --password-stdin
                      '''
 
                      sh '''
-                         docker image tag flask-app:latest "$dockerHubUser"/two-tier-flask-app:latest
+                         docker image tag flask-app:latest "$DockerHub_User"/two-tier-flask-app:latest
                      '''
 
                      echo "Push Image to DockerHub"
                     
                      sh '''
-                        docker push "$dockerHubUser"/two-tier-flask-app:latest
+                        docker push "$DockerHub_User"/two-tier-flask-app:latest
                      '''
                 }
             }
