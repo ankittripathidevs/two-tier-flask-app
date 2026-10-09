@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent an
 
     stages {
         // 1. Clone source code
