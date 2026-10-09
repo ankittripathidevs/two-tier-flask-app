@@ -64,7 +64,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying the application'
-                s 'docker compose up -d --build'
+                sh 'docker compose up -d --build'
             }
         }
     }
