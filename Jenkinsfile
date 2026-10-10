@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label "dev" }
 
     stages {
         // 1. Clone source code
