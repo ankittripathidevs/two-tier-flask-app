@@ -75,17 +75,17 @@ pipeline {
             echo 'Deployment pipeline completed successfully'
             mail(
                 subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: "Build successful.\n\nBuild URL: ${env.BUILD_URL}"
-                to: 'ankittripathi2k24@gmail.com',
+                body: "Build successful.\n\nBuild URL: ${env.BUILD_URL}",
+                to: 'ankittripathi2k24@gmail.com'
             )
         }
 
         failure {
             echo 'Pipeline failed'
             mail(
-                to: 'ankittripathi2k24@gmail.com',
+                body: "Build failed. Check the console output.\n\nBuild URL: ${env.BUILD_URL}",
                 subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: "Build failed. Check the console output.\n\nBuild URL: ${env.BUILD_URL}"
+                to: 'ankittripathi2k24@gmail.com'
             )
         }
     }
