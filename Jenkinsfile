@@ -77,9 +77,9 @@ pipeline {
                 // subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
                 // body: "Build successful.\n\nBuild URL: ${env.BUILD_URL}"
                 // to: 'ankittripathi2k24@gmail.com',
+                to: "ankittripathi2k24@gmail.com",
                 subject: "Build Successful",
                 body: "Good News: YOur build was successful",
-                to: "ankittripathi2k24@gmail.com"
             )
         }
 
