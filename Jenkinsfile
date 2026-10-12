@@ -1,8 +1,19 @@
+
 pipeline {
-    agent { label "dev" }
+    agent { label 'dev' }
 
     stages {
-        // 1. Clone source code
+        // 1. Test Jenkins Agent
+        stage('Test Agent') {
+            steps {
+                echo 'Testing Jenkins Agent...'
+                sh 'hostname'
+                sh 'whoami'
+                sh 'java --version'
+            }
+        }
+
+        // 2. Clone Source Code
         stage('Code Clone') {
             steps {
                 echo 'Cloning code from GitHub'
@@ -11,7 +22,7 @@ pipeline {
             }
         }
 
-        // 2. Build Docker image
+        // 3. Build Docker Image
         stage('Build') {
             steps {
                 echo 'Building Docker image'
@@ -19,16 +30,15 @@ pipeline {
             }
         }
 
-        // 3. Test
+        // 4. Test Application
         stage('Test') {
             steps {
                 echo 'Testing the application'
-                // Add actual automated tests here.
-                // This stage currently does not run application tests.
+                // Add automated application tests here.
             }
         }
 
-        // 4. Log in and push the image to Docker Hub
+        // 5. Push Image to Docker Hub
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([
@@ -39,28 +49,24 @@ pipeline {
                     )
                 ]) {
                     sh '''
-
                         echo "Logging into DockerHub"
                         echo "$DOCKERHUB_PASS" | docker login \
                             --username "$DOCKERHUB_USER" \
                             --password-stdin
 
-
-                        echo "Tagging Docker Image"
+                        echo "Tagging Docker image"
                         docker tag flask-app:latest \
                             "$DOCKERHUB_USER/two-tier-flask-app:latest"
 
-
-                        echo "Pushing Docker Image"
+                        echo "Pushing Docker image"
                         docker push \
                             "$DOCKERHUB_USER/two-tier-flask-app:latest"
-
                     '''
                 }
             }
         }
 
-        // 5. Deploy with Docker Compose
+        // 6. Deploy Application
         stage('Deploy') {
             steps {
                 echo 'Deploying the application'
@@ -69,23 +75,35 @@ pipeline {
         }
     }
 
-    // Optional email notifications; requires Jenkins email configuration
+    // 7. Post-Build Actions and Email Notifications
     post {
         success {
             echo 'Deployment pipeline completed successfully'
-            mail(
-                subject: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                body: "Build successful.\n\nBuild URL: ${env.BUILD_URL}",
-                to: 'ankittripathi2k24@gmail.com'
+
+            emailext(
+                to: 'ankittripathi2k24@gmail.com',
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    Build completed successfully.
+                    Job: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+                    Build URL: ${env.BUILD_URL}
+                """
             )
         }
 
         failure {
-            echo 'Pipeline failed'
-            mail(
-                body: "Build failed. Check the console output.\n\nBuild URL: ${env.BUILD_URL}",
-                subject: "FAILURE: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                to: 'ankittripathi2k24@gmail.com'
+            echo 'Deployment pipeline failed'
+
+            emailext(
+                to: 'ankittripathi2k24@gmail.com',
+                subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    Build failed.
+                    Job: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+                    Build URL: ${env.BUILD_URL}
+                """
             )
         }
     }
