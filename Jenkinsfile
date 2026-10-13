@@ -22,10 +22,15 @@ pipeline {
         }
 
         // 3. Scan File (Security)
-        stage('Trivy File Scan System') {
+        stage('Trivy File Scan') {
             steps {
-                echo 'Scanning files'
-                sh 'trivy fs . results.json'
+                echo 'Scanning files for vulnerabilities...'
+                sh '''
+                    trivy fs --severity HIGH,CRITICAL \
+                    --format json \
+                    --output results.json \
+                    .
+               '''
             }
         }
 
