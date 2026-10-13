@@ -27,7 +27,6 @@ pipeline {
                 echo 'Scanning files for vulnerabilities...'
                 sh '''
                     trivy fs --severity HIGH,CRITICAL \
-                    --format json \
                     --output results.json \
                     .
                '''
