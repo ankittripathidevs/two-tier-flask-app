@@ -25,7 +25,7 @@ pipeline {
         stage('Trivy File Scan System') {
             steps {
                 echo 'Scanning files'
-                // sh 'trivy fs . results.json'
+                sh 'trivy fs . results.json'
             }
         }
 
