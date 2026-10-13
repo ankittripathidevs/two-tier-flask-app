@@ -25,7 +25,7 @@ pipeline {
         stage('Trivy File Scan') {
             steps {
                 echo 'Scanning files for vulnerabilities...'
-                sh 'trivy fs  --output results.json .'
+                sh 'trivy fs . --output results.json'
             }
         }
 
