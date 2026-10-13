@@ -111,7 +111,9 @@ pipeline {
                     Job: ${env.JOB_NAME}
                     Build Number: ${env.BUILD_NUMBER}
                     Build URL: ${env.BUILD_URL}
-                """
+                """,
+                attachLog: true,
+                attachmentsPattern: 'results.json'
             )
         }
     }
