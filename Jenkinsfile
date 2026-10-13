@@ -97,7 +97,7 @@ pipeline {
                     Build Number: ${env.BUILD_NUMBER}
                     Build URL: ${env.BUILD_URL}
                 """,
-                attachmentsPattern: 'results.json'
+                attachmentsPattern: 'results.json'  // send trivy scan report
             )
         }
 
@@ -113,7 +113,7 @@ pipeline {
                     Build Number: ${env.BUILD_NUMBER}
                     Build URL: ${env.BUILD_URL}
                 """,
-                attachmentsPattern: 'results.json'
+                attachmentsPattern: 'results.json'  // send trivy scan report
             )
         }
     }
