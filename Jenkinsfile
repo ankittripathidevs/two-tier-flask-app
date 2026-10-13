@@ -1,4 +1,3 @@
-
 pipeline {
     agent { label 'dev' }
 
@@ -22,7 +21,15 @@ pipeline {
             }
         }
 
-        // 3. Build Docker Image
+        // 3. Scan File (Security)
+        stage('Trivy File Scan System') {
+            steps {
+                echo 'Scanning files'
+                sh 'trivy fs . results.json'
+            }
+        }
+
+        // 4. Build Docker Image
         stage('Build') {
             steps {
                 echo 'Building Docker image'
@@ -30,7 +37,7 @@ pipeline {
             }
         }
 
-        // 4. Test Application
+        // 5. Test Application
         stage('Test') {
             steps {
                 echo 'Testing the application'
@@ -38,7 +45,7 @@ pipeline {
             }
         }
 
-        // 5. Push Image to Docker Hub
+        // 6. Push Image to Docker Hub
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([
@@ -66,7 +73,7 @@ pipeline {
             }
         }
 
-        // 6. Deploy Application
+        // 7. Deploy Application
         stage('Deploy') {
             steps {
                 echo 'Deploying the application'
@@ -75,7 +82,8 @@ pipeline {
         }
     }
 
-    // 7. Post-Build Actions and Email Notifications
+
+    // 8. Post-Build Actions and Email Notifications
     post {
         success {
             echo 'Deployment pipeline completed successfully'
