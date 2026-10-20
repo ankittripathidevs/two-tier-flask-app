@@ -1,6 +1,5 @@
 pipeline {
-    // agent { label 'dev' }
-    agent any
+    agent { label 'dev' }
 
     stages {
         // 1. Test Jenkins Agent
